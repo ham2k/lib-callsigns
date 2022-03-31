@@ -1,8 +1,5 @@
-const MODIFIER_REGEXP = /^([A-Z0-9]+\/){0,1}([0-9]{0,1}[A-Z]{1,2}[0-9]+[A-Z][A-Z0-9]*)(\/[A-Z0-9/]+){0,1}$/
-const PREFIX_REGEXP = /^([0-9]{0,1}[A-Z]{1,2}[0-9]{0,1})([0-9]+)([A-Z0-9]*)$/
-const NUMBERS_REGEXP = /^[0-9]+$/
-const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHP]|V[AEYO]|CY|K|W)[0-9]*$/
-const QUALIFIER_REGEXP = /^(QRP|P|M|AM|MM|AE|AG|R)+$/
+// Basic regexp that identifies a callsign and any pre- and post-modifiers.
+const EXTENDED_CALLSIGN_REGEXP = /^([A-Z0-9]+\/){0,1}([0-9]{0,1}[A-Z]{1,2}[0-9]+[A-Z][A-Z0-9]*)(\/[A-Z0-9/]+){0,1}$/
 
 /**
  * Parse a callsign into its component parts, including alternate prefixes and multiple postmodifiers.
@@ -45,7 +42,7 @@ function parseCallsign(callsign) {
   const info = {}
   callsign = callsign.trim().toUpperCase()
 
-  const modifierParts = callsign.match(MODIFIER_REGEXP)
+  const modifierParts = callsign.match(EXTENDED_CALLSIGN_REGEXP)
   if (modifierParts) {
     info.callsign = callsign
 
@@ -59,40 +56,90 @@ function parseCallsign(callsign) {
 
     info.operator = modifierParts[2]
 
-    let prefixLetters, prefixNumber
-
-    if (info.premodifier) {
-      // If YV5/N0CALL, then YV5 is the prefix
-      const prefixParts = info.premodifier.match(PREFIX_REGEXP)
-      prefixNumber = prefixParts && prefixParts[2] ? prefixParts[2] : "0"
-      prefixLetters = prefixParts ? prefixParts[1] : info.premodifier
-      info.prefix = prefixLetters + prefixNumber
-    } else {
-      const prefixParts = info.operator.match(PREFIX_REGEXP)
-      if (prefixParts) {
-        prefixLetters = prefixParts[1]
-        prefixNumber = prefixParts[2]
-        info.prefix = prefixLetters + prefixNumber
-      }
-    }
+    processPrefix(info.premodifier || info.operator, info)
 
     for (const postmodifier of info.postmodifiers || []) {
-      if (postmodifier.match(NUMBERS_REGEXP)) {
-        // If N0CALL/1, parse prefix, but replace number
-        prefixNumber = postmodifier
-        info.prefix = prefixLetters + prefixNumber
-      } else if (postmodifier.match(SUFFIXED_COUNTRY_REGEXP)) {
-        // If N0CALL/KH6, use postmodifier as prefix
-        const prefixParts = postmodifier.match(PREFIX_REGEXP)
-        prefixLetters = prefixParts ? prefixParts[1] : postmodifier
-        prefixNumber = prefixParts ? prefixParts[2] : "0"
-        info.prefix = prefixLetters + prefixNumber
-      } else if (postmodifier.match(QUALIFIER_REGEXP)) {
-        // If N0CALL/P, parse prefix from plain callsign
-        info.qualifiers = info.qualifiers || []
-        info.qualifiers.push(postmodifier)
-      }
+      processPostModifier(postmodifier, info)
     }
+  }
+
+  return info
+}
+
+// Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
+const PREFIX_REGEXP = /^([0-9]{0,1}[A-Z]{1,2})([0-9]{0,1})([0-9]{0,1})([A-Z0-9]*)$/
+
+// Countries with prefixes that end in a digit
+//   The only allocated prefixes that can have a single letter are: B (China), F (France), G (United Kingdom), I (Italy), K (USA), M (UK), N (USA), R (Russia) or W (USA)
+//   Any other single letter prefix followed by a digit means the prefix includes the digit
+//   Plus, Fiji uses 3D2
+const TRAILING_DIGIT_PREFIXES_LOOKUP = {
+  "3D": true,
+  A: true,
+  C: true,
+  D: true,
+  E: true,
+  H: true,
+  J: true,
+  L: true,
+  O: true,
+  P: true,
+  Q: true,
+  S: true,
+  T: true,
+  U: true,
+  V: true,
+  X: true,
+  Y: true,
+  Z: true,
+}
+
+function processPrefix(callsign, info = {}) {
+  const prefixParts = callsign.match(PREFIX_REGEXP)
+  if (prefixParts) {
+    info.ituPrefix = prefixParts[1]
+    if (TRAILING_DIGIT_PREFIXES_LOOKUP[info.ituPrefix]) {
+      info.ituPrefix = info.ituPrefix + prefixParts[2]
+      info.digit = prefixParts[3] ? prefixParts[3] : ""
+    } else {
+      info.digit = prefixParts[2] ? prefixParts[2] : ""
+    }
+
+    // if (info.ituPrefix === "3D" && info.digit) {
+    //   // Special case: Fiji uses 3D2 without a separator digit
+    //   info.ituPrefix = info.ituPrefix + info.digit
+    //   info.digit = prefixParts[3] ? prefixParts[3] : ""
+    // }
+
+    info.prefix = info.ituPrefix + info.digit
+  }
+
+  return info
+}
+
+// Regexp for digits
+const DIGITS_REGEXP = /^[0-9]+$/
+
+// Countries that allow postmodifiers to override the prefix
+//   Includes US, Canada & Peru
+const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHP]|V[AEYO]|O[ABC]|CY|K|W|)[0-9]*$/
+
+// List of well known postmodifier qualifiers
+const QUALIFIER_REGEXP = /^(QRP|P|M|AM|MM|AE|AG|R)+$/
+
+function processPostModifier(modifier, info = {}) {
+  if (modifier.match(DIGITS_REGEXP)) {
+    // If N0CALL/1, parse prefix from callsign, but replace number
+    info.digit = modifier
+    info.prefix = info.ituPrefix + info.digit
+  } else if (modifier.match(SUFFIXED_COUNTRY_REGEXP)) {
+    // If N0CALL/KH6, use modifier as prefix
+    processPrefix(modifier, info)
+  } else if (modifier.match(QUALIFIER_REGEXP)) {
+    // List of well known qualifiers
+    // If N0CALL/P, parse prefix from plain callsign
+    info.qualifiers = info.qualifiers || []
+    info.qualifiers.push(modifier)
   }
 
   return info
@@ -100,4 +147,5 @@ function parseCallsign(callsign) {
 
 module.exports = {
   parseCallsign,
+  processPrefix,
 }
