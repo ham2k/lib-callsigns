@@ -46,7 +46,19 @@ The best source of information is the [Wikipedia Article on Amateur radio call s
 
 # Other Links
 
+https://www.itu.int/net/ITU-R/terrestrial/docs/fixedmobile/fxm-art19-sec3.pdf
+
+> 19.67 Amateur and experimental stations
+> 19.68 § 30 1)
+> – one character (provided that it is the letter B, F, G, I, K, M, N, R or W) and a single digit (other than 0 or 1), followed by a group of not more than four characters, the last of which shall be a letter, or
+> – two characters and a single digit (other than 0 or 1), followed by a group of not more than four characters, the last of which shall be a letter. (WRC-03)
+> 9.68A 1A) On special occasions, for temporary use, administrations may authorize use of call signs with more than the four characters referred to in No. 19.68. (WRC-03)
+
+> 19.68.1 In the case of half series (i.e. when the first two characters are allocated to more than one Member State), the first three characters are required for nationality identification. In such cases, the call sign shall consist of three characters followed by a single digit and a group of not more than three characters, the last of which shall be a letter. (WRC-07)
+
 https://www.itu.int/en/ITU-R/terrestrial/fmd/Pages/call_sign_series.aspx
+
+https://www.fcc.gov/wireless/bureau-divisions/mobility-division/amateur-radio-service/amateur-call-sign-systems
 
 From https://ham.stackexchange.com/questions/1352/how-can-i-tell-if-a-call-sign-is-valid
 

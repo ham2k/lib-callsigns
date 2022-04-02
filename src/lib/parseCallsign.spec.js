@@ -125,14 +125,14 @@ describe("parseCallsign", () => {
     })
   })
 
-  it("should recognize prefix modifiers with zone numbers", () => {
+  it("should recognize prefix indicators with zone numbers", () => {
     expect(parseCallsign("YV5/N0CALL")).toEqual({
       callsign: "YV5/N0CALL",
       operator: "N0CALL",
       prefix: "YV5",
       ituPrefix: "YV",
       digit: "5",
-      premodifier: "YV5",
+      preindicator: "YV5",
     })
     expect(parseCallsign("V5/N0CALL")).toEqual({
       callsign: "V5/N0CALL",
@@ -140,7 +140,7 @@ describe("parseCallsign", () => {
       prefix: "V5",
       ituPrefix: "V5",
       digit: "",
-      premodifier: "V5",
+      preindicator: "V5",
     })
     expect(parseCallsign("9A5/N0CALL")).toEqual({
       callsign: "9A5/N0CALL",
@@ -148,23 +148,23 @@ describe("parseCallsign", () => {
       prefix: "9A5",
       ituPrefix: "9A",
       digit: "5",
-      premodifier: "9A5",
+      preindicator: "9A5",
     })
   })
 
-  it("should recognize prefix modifiers without digits", () => {
+  it("should recognize prefix indicators without digits", () => {
     expect(parseCallsign("YV/N0CALL")).toEqual({
       callsign: "YV/N0CALL",
       operator: "N0CALL",
       prefix: "YV",
       ituPrefix: "YV",
       digit: "",
-      premodifier: "YV",
+      preindicator: "YV",
       postmodifier: undefined,
     })
   })
 
-  it("should recognize US & Canada suffix modifiers", () => {
+  it("should recognize US & Canada suffix indicators", () => {
     // Only the US, Canada & Peru use callsign suffixes (AFAIK), because:
     // * the operator is using their license in another other country,
     // * they are operating from a different area denoted not only by zone number, like Alaska, Hawaii, or Yukon
@@ -175,7 +175,7 @@ describe("parseCallsign", () => {
       prefix: "KH6",
       digit: "6",
       ituPrefix: "KH",
-      postmodifiers: ["KH6"],
+      postindicators: ["KH6"],
     })
 
     expect(parseCallsign("N0CALL/KL")).toEqual({
@@ -184,7 +184,7 @@ describe("parseCallsign", () => {
       prefix: "KL",
       ituPrefix: "KL",
       digit: "",
-      postmodifiers: ["KL"],
+      postindicators: ["KL"],
     })
 
     expect(parseCallsign("VE0CALL/K6")).toEqual({
@@ -193,7 +193,7 @@ describe("parseCallsign", () => {
       prefix: "K6",
       ituPrefix: "K",
       digit: "6",
-      postmodifiers: ["K6"],
+      postindicators: ["K6"],
     })
 
     expect(parseCallsign("K0CALL/CY")).toEqual({
@@ -202,7 +202,7 @@ describe("parseCallsign", () => {
       prefix: "CY",
       ituPrefix: "CY",
       digit: "",
-      postmodifiers: ["CY"],
+      postindicators: ["CY"],
     })
 
     expect(parseCallsign("K0CALL/VE")).toEqual({
@@ -211,7 +211,7 @@ describe("parseCallsign", () => {
       prefix: "VE",
       ituPrefix: "VE",
       digit: "",
-      postmodifiers: ["VE"],
+      postindicators: ["VE"],
     })
 
     expect(parseCallsign("K0CALL/VE5")).toEqual({
@@ -220,7 +220,7 @@ describe("parseCallsign", () => {
       prefix: "VE5",
       ituPrefix: "VE",
       digit: "5",
-      postmodifiers: ["VE5"],
+      postindicators: ["VE5"],
     })
 
     expect(parseCallsign("VE2CALL/VY0")).toEqual({
@@ -229,7 +229,7 @@ describe("parseCallsign", () => {
       prefix: "VY0",
       ituPrefix: "VY",
       digit: "0",
-      postmodifiers: ["VY0"],
+      postindicators: ["VY0"],
     })
   })
 
@@ -245,7 +245,7 @@ describe("parseCallsign", () => {
 
   it("should recognize prefixes with trailing digits and modifier digits", () => {
     // Some would expect the country prefix to be V6 and the separator digit to be 9, so the resulting prefix should be V69
-    // but this result is highly confusing for most operators, so nobody should be using zone modifiers
+    // but this result is highly confusing for most operators, so nobody should be using zone indicators
     // on prefixes with trailing numbers.
 
     expect(parseCallsign("V67C/9")).toEqual({
@@ -254,19 +254,19 @@ describe("parseCallsign", () => {
       prefix: "V69",
       ituPrefix: "V6",
       digit: "9",
-      postmodifiers: ["9"],
+      postindicators: ["9"],
     })
   })
 
-  it("should recognize suffix qualifiers", () => {
+  it("should recognize suffix indicators", () => {
     expect(parseCallsign("N0CALL/P")).toEqual({
       callsign: "N0CALL/P",
       operator: "N0CALL",
       prefix: "N0",
       ituPrefix: "N",
       digit: "0",
-      postmodifiers: ["P"],
-      qualifiers: ["P"],
+      postindicators: ["P"],
+      indicators: ["P"],
     })
   })
 
@@ -277,43 +277,43 @@ describe("parseCallsign", () => {
       prefix: "N1",
       ituPrefix: "N",
       digit: "1",
-      postmodifiers: ["1"],
+      postindicators: ["1"],
     })
   })
 
-  it("should recognize multiple suffix modifiers", () => {
+  it("should recognize multiple suffix indicators", () => {
     expect(parseCallsign("N0CALL/1/QRP/P")).toEqual({
       callsign: "N0CALL/1/QRP/P",
       operator: "N0CALL",
       prefix: "N1",
       ituPrefix: "N",
       digit: "1",
-      postmodifiers: ["1", "QRP", "P"],
-      qualifiers: ["QRP", "P"],
+      postindicators: ["1", "QRP", "P"],
+      indicators: ["QRP", "P"],
     })
   })
 
-  it("should handle bad suffix modifiers", () => {
+  it("should handle bad suffix indicators", () => {
     expect(parseCallsign("N0CALL/YV")).toEqual({
       callsign: "N0CALL/YV",
       operator: "N0CALL",
       prefix: "N0",
       ituPrefix: "N",
       digit: "0",
-      postmodifiers: ["YV"],
+      postindicators: ["YV"],
     })
   })
 
-  it("should recognize prefixed and suffixed modifiers", () => {
+  it("should recognize prefixed and suffixed indicators", () => {
     expect(parseCallsign("YV/N0CALL/P")).toEqual({
       callsign: "YV/N0CALL/P",
       operator: "N0CALL",
       prefix: "YV",
       ituPrefix: "YV",
       digit: "",
-      premodifier: "YV",
-      postmodifiers: ["P"],
-      qualifiers: ["P"],
+      preindicator: "YV",
+      postindicators: ["P"],
+      indicators: ["P"],
     })
 
     expect(parseCallsign("YV/N0CALL/P/7")).toEqual({
@@ -322,9 +322,9 @@ describe("parseCallsign", () => {
       prefix: "YV7",
       ituPrefix: "YV",
       digit: "7",
-      premodifier: "YV",
-      postmodifiers: ["P", "7"],
-      qualifiers: ["P"],
+      preindicator: "YV",
+      postindicators: ["P", "7"],
+      indicators: ["P"],
     })
   })
 
@@ -400,7 +400,7 @@ describe("parseCallsign", () => {
       prefix: "YV5",
       ituPrefix: "YV",
       digit: "5",
-      premodifier: "YV5",
+      preindicator: "YV5",
     })
   })
 })
