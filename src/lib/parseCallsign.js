@@ -29,8 +29,8 @@ const EXTENDED_CALLSIGN_REGEXP = /^([A-Z0-9]+\/){0,1}([0-9]{0,1}[A-Z]{1,2}[0-9]+
  * Please see the companion tests for more details and examples.
  *
  * Returns an object with the following properties:
- * - `callsign`: the original callsign, including indicators
- * - `operator`: the original callsign without any indicators
+ * - `call`: the original callsign, including indicators
+ * - `baseCall`: the original callsign without any indicators
  * - `prefix`: the prefix of the callsign, including any changes from indicators
  * - `preindicator`: if present, any preindicator
  * - `postindicators`: if present, an array of postindicators
@@ -45,7 +45,7 @@ function parseCallsign(callsign) {
 
   const callsignParts = callsign.match(EXTENDED_CALLSIGN_REGEXP)
   if (callsignParts) {
-    info.callsign = callsign
+    info.call = callsign
 
     if (callsignParts[1]) {
       info.preindicator = callsignParts[1].slice(0, callsignParts[1].length - 1)
@@ -55,9 +55,9 @@ function parseCallsign(callsign) {
       info.postindicators = callsignParts[3].slice(1, callsignParts[3].length).split("/")
     }
 
-    info.operator = callsignParts[2]
+    info.baseCall = callsignParts[2]
 
-    processPrefix(info.preindicator || info.operator, info)
+    processPrefix(info.preindicator || info.baseCall, info)
 
     for (const postindicator of info.postindicators || []) {
       processPostindicator(postindicator, info)
