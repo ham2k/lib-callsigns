@@ -44,6 +44,14 @@ The best source of information is the [Wikipedia Article on Amateur radio call s
 
 - Argentina uses the first letter of the suffix as a regional designator. And it allows a postmodifier letter to replace it. So `LU1NABC` is located in Santiago del Estero, and `LU5AXYZ` is located in Buenos Aires, but `LU5AXYZ/N` is operating from Santiago del Estero.
 
+# CQ WPX
+
+CQ Magazine has both contests and [awards](https://cq-amateur-radio.com/cq_awards/cq_wpx_awards/cq-wpx-award-rules-022017.pdf) that are based on callsign prefixes.
+
+Their prefix rules are slightly different from ITU's. They include all separating numerals as part of the prefix, not just the first one.
+
+And when a prefix is defined by a modifier but does not include a numeral, it defaults to 0.
+
 # Other Links
 
 https://www.itu.int/net/ITU-R/terrestrial/docs/fixedmobile/fxm-art19-sec3.pdf
