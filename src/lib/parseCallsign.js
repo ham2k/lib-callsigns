@@ -39,8 +39,7 @@ const EXTENDED_CALLSIGN_REGEXP = /^([A-Z0-9]+\/){0,1}([0-9]{0,1}[A-Z]{1,2}[0-9]+
  * @param {string} callsign
  * @returns {object}
  */
-function parseCallsign(callsign) {
-  const info = {}
+function parseCallsign(callsign, info = {}) {
   callsign = callsign.trim().toUpperCase()
 
   const callsignParts = callsign.match(EXTENDED_CALLSIGN_REGEXP)
