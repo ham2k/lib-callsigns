@@ -122,7 +122,7 @@ const DIGITS_REGEXP = /^[0-9]+$/
 
 // Countries that allow/require postindicators to override the prefix
 //   Includes US, Canada & Peru
-const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHP]|V[AEYO]|O[ABC]|CY|K|W|)[0-9]*$/
+const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHPG]|V[AEYO]|O[ABC]|CY|K|W|)[0-9]*$/
 
 // List of well known postmodifier indicators
 const INDICATOR_REGEXP = /^(QRP|P|M|AM|MM|A[AGE]|KT|R)+$/
