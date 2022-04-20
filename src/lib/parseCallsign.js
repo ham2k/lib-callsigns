@@ -1,6 +1,8 @@
 // Basic regexp that identifies a callsign and any pre- and post-indicators.
 const EXTENDED_CALLSIGN_REGEXP = /^([A-Z0-9]+\/){0,1}([0-9]{0,1}[A-Z]{1,2}[0-9]+[A-Z][A-Z0-9]*)(\/[A-Z0-9/]+){0,1}$/
 
+const VALID_CALLSIGN_REGEXP = /^(3D[0-9]|[0-9][A-Z][0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)/
+
 /**
  * Parse a callsign into its component parts, including alternate prefixes and multiple indicators.
  *
@@ -45,7 +47,6 @@ function parseCallsign(callsign, info = {}) {
   const callsignParts = callsign.match(EXTENDED_CALLSIGN_REGEXP)
   if (callsignParts) {
     info.call = callsign
-
     if (callsignParts[1]) {
       info.preindicator = callsignParts[1].slice(0, callsignParts[1].length - 1)
     }
@@ -54,12 +55,14 @@ function parseCallsign(callsign, info = {}) {
       info.postindicators = callsignParts[3].slice(1, callsignParts[3].length).split("/")
     }
 
-    info.baseCall = callsignParts[2]
+    if (callsignParts[2] && callsignParts[2].match(VALID_CALLSIGN_REGEXP)) {
+      info.baseCall = callsignParts[2]
 
-    processPrefix(info.preindicator || info.baseCall, info)
+      processPrefix(info.preindicator || info.baseCall, info)
 
-    for (const postindicator of info.postindicators || []) {
-      processPostindicator(postindicator, info)
+      for (const postindicator of info.postindicators || []) {
+        processPostindicator(postindicator, info)
+      }
     }
   }
 
@@ -67,51 +70,27 @@ function parseCallsign(callsign, info = {}) {
 }
 
 // Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
-const PREFIX_REGEXP = /^([0-9]{0,1}[A-Z]{1,2})([0-9]{0,1})([0-9]{0,1})([A-Z0-9]*)$/
+// except for Eswatini that uses `3DA`
+const PREFIX_REGEXP = /^(3D[A-Z0-9]|[0-9][A-Z]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
 
+// Prefixes should be [letter], [letter letter], [digit letter] or [letter digit],
+//
 // Countries with prefixes that end in a digit
-//   The only allocated prefixes that can have a single letter are: B (China), F (France), G (United Kingdom), I (Italy), K (USA), M (UK), N (USA), R (Russia) or W (USA)
+//   The only allocated prefixes that can have a single letter are:
+//   B (China), F (France), G (United Kingdom), I (Italy), K (USA), M (UK), N (USA), R (Russia) or W (USA)
+//
 //   Any other single letter prefix followed by a digit means the prefix includes the digit
-//   Plus, Fiji uses 3D2
-const TRAILING_DIGIT_PREFIXES_LOOKUP = {
-  "3D": true,
-  A: true,
-  C: true,
-  D: true,
-  E: true,
-  H: true,
-  J: true,
-  L: true,
-  O: true,
-  P: true,
-  Q: true,
-  S: true,
-  T: true,
-  U: true,
-  V: true,
-  X: true,
-  Y: true,
-  Z: true,
-}
+//
+// Exceptions
+//   Eswatini uses 3DA, a [digit letter letter] suffix
 
 function processPrefix(callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
   if (prefixParts) {
     info.ituPrefix = prefixParts[1]
-    if (TRAILING_DIGIT_PREFIXES_LOOKUP[info.ituPrefix]) {
-      info.ituPrefix = info.ituPrefix + prefixParts[2]
-      info.digit = prefixParts[3] ? prefixParts[3] : ""
-    } else {
-      info.digit = prefixParts[2] ? prefixParts[2] : ""
-    }
-
-    // if (info.ituPrefix === "3D" && info.digit) {
-    //   // Special case: Fiji uses 3D2 without a separator digit
-    //   info.ituPrefix = info.ituPrefix + info.digit
-    //   info.digit = prefixParts[3] ? prefixParts[3] : ""
-    // }
-
+    info.digit = prefixParts[2]
     info.prefix = info.ituPrefix + info.digit
+    if (prefixParts[3]) info.extendedPrefix = info.prefix + prefixParts[3]
   }
 
   return info

@@ -26,8 +26,10 @@ describe("processPrefix", () => {
   })
 
   it("should ignore invalid prefixes", () => {
-    expect(parseCallsign("10N")).toEqual({})
-    expect(parseCallsign("10N0")).toEqual({})
+    expect(parseCallsign("10N").baseCall).toBe(undefined)
+    expect(parseCallsign("10N0").baseCall).toBe(undefined)
+    expect(parseCallsign("1AB0").baseCall).toBe(undefined)
+    expect(parseCallsign("1AB0C").baseCall).toBe(undefined)
   })
 
   it("should handle one character prefixes", () => {
@@ -96,11 +98,6 @@ describe("processPrefix", () => {
     expect(processPrefix("3DA1A")).toEqual({
       prefix: "3DA1",
       ituPrefix: "3DA",
-      digit: "1",
-    })
-    expect(processPrefix("9XX1A")).toEqual({
-      prefix: "9XX1",
-      ituPrefix: "9XX",
       digit: "1",
     })
   })
@@ -391,6 +388,7 @@ describe("parseCallsign", () => {
       call: "TM40PARTY",
       baseCall: "TM40PARTY",
       prefix: "TM4",
+      extendedPrefix: "TM40",
       ituPrefix: "TM",
       digit: "4",
     })
