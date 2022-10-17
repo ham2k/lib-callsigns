@@ -288,16 +288,65 @@ describe("parseCallsign", () => {
       postindicators: ["1", "QRP", "P"],
       indicators: ["QRP", "P"],
     })
+
+    expect(parseCallsign("N0CALL/QRP/1/P")).toEqual({
+      call: "N0CALL/QRP/1/P",
+      baseCall: "N0CALL",
+      prefix: "N1",
+      ituPrefix: "N",
+      digit: "1",
+      postindicators: ["QRP", "1", "P"],
+      indicators: ["QRP", "P"],
+    })
+  })
+
+  it("should handle bad suffix indicators for valid prefixes (should have been prefixes)", () => {
+    expect(parseCallsign("N0CALL/YV")).toEqual({
+      call: "N0CALL/YV",
+      baseCall: "N0CALL",
+      prefix: "YV",
+      ituPrefix: "YV",
+      digit: "",
+      postindicators: ["YV"],
+    })
+
+    expect(parseCallsign("N0CALL/P/YV7")).toEqual({
+      call: "N0CALL/P/YV7",
+      baseCall: "N0CALL",
+      prefix: "YV7",
+      ituPrefix: "YV",
+      digit: "7",
+      postindicators: ["P", "YV7"],
+      indicators: ["P"],
+    })
+
+    expect(parseCallsign("N0CALL/HK0")).toEqual({
+      call: "N0CALL/HK0",
+      baseCall: "N0CALL",
+      prefix: "HK0",
+      ituPrefix: "HK",
+      digit: "0",
+      postindicators: ["HK0"],
+    })
   })
 
   it("should handle bad suffix indicators", () => {
-    expect(parseCallsign("N0CALL/YV")).toEqual({
-      call: "N0CALL/YV",
+    expect(parseCallsign("N0CALL/NA3")).toEqual({
+      call: "N0CALL/NA3",
       baseCall: "N0CALL",
       prefix: "N0",
       ituPrefix: "N",
       digit: "0",
-      postindicators: ["YV"],
+      postindicators: ["NA3"],
+    })
+
+    expect(parseCallsign("N0CALL/XX")).toEqual({
+      call: "N0CALL/XX",
+      baseCall: "N0CALL",
+      prefix: "N0",
+      ituPrefix: "N",
+      digit: "0",
+      postindicators: ["XX"],
     })
   })
 
@@ -321,6 +370,17 @@ describe("parseCallsign", () => {
       digit: "7",
       preindicator: "YV",
       postindicators: ["P", "7"],
+      indicators: ["P"],
+    })
+
+    expect(parseCallsign("YV7/N0CALL/P")).toEqual({
+      call: "YV7/N0CALL/P",
+      baseCall: "N0CALL",
+      prefix: "YV7",
+      ituPrefix: "YV",
+      digit: "7",
+      preindicator: "YV7",
+      postindicators: ["P"],
       indicators: ["P"],
     })
   })

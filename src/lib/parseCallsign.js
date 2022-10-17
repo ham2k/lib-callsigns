@@ -104,8 +104,10 @@ const DIGITS_REGEXP = /^[0-9]+$/
 const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHPG]|V[AEYO]|O[ABC]|CY|K|W|)[0-9]*$/
 
 // List of well known postmodifier indicators
-const INDICATOR_REGEXP = /^(QRP|P|M|AM|MM|A[AGE]|KT|R)+$/
-// Some of these (A[AGE]|KT) are defined by the FCC [here](from www.law.cornell.edu/cfr/text/47/97.119)
+const KNOWN_INDICATORS = ["QRP", "P", "M", "AM", "MM", "AA", "AG", "AE", "KT", "R"]
+// Some of these (AA AG AE KT) are defined by the FCC [here](https://www.law.cornell.edu/cfr/text/47/97.119)
+
+const KNOWN_ENTITIES = require("../data/entityPrefixes.json")
 
 function processPostindicator(indicator, info = {}) {
   if (indicator.match(DIGITS_REGEXP)) {
@@ -115,11 +117,18 @@ function processPostindicator(indicator, info = {}) {
   } else if (indicator.match(SUFFIXED_COUNTRY_REGEXP)) {
     // If N0CALL/KH6, use indicator as prefix
     processPrefix(indicator, info)
-  } else if (indicator.match(INDICATOR_REGEXP)) {
+  } else if (KNOWN_INDICATORS.indexOf(indicator) >= 0) {
     // List of well known indicators
     // If N0CALL/P, parse prefix from plain callsign
     info.indicators = info.indicators || []
     info.indicators.push(indicator)
+  } else {
+    // Allow postfix entity indicators (should have been a prefix, but people sometimes do this)\
+    // but only if it matches a principal entity prefix (i.e. ok for `G` or `G1` in England but not 'M')
+    const indicatorParts = processPrefix(indicator)
+    if (KNOWN_ENTITIES.indexOf(indicatorParts.ituPrefix) >= 0) {
+      processPrefix(indicator, info)
+    }
   }
 
   return info
