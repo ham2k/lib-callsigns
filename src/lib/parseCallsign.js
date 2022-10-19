@@ -1,9 +1,25 @@
+// Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
+// except for Eswatini that uses `3DA`
+const PREFIX_REGEXP = /^(3D[A-Z0-9]|[0-9][A-Z]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
+
+// Prefixes should be [letter], [letter letter], [digit letter] or [letter digit],
+//
+// Countries with prefixes that end in a digit
+//   The only allocated prefixes that can have a single letter are:
+//   B (China), F (France), G (United Kingdom), I (Italy), K (USA), M (UK), N (USA), R (Russia) or W (USA)
+//
+//   Any other single letter prefix followed by a digit means the prefix includes the digit
+//
+// Exceptions
+//   Eswatini uses 3DA, a [digit letter letter] suffix
+
 // Basic regexp that identifies a callsign and any pre- and post-indicators.
-const EXTENDED_CALLSIGN_REGEXP = /^([A-Z0-9]+\/){0,1}([0-9]{0,1}[A-Z]{1,2}[0-9]+[A-Z][A-Z0-9]*)(\/[A-Z0-9/]+){0,1}$/
+const CALLSIGN_REGEXP =
+  /^([A-Z0-9]+\/){0,1}(3D[A-Z0-9]|[0-9][A-Z][0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
 
-const VALID_CALLSIGN_REGEXP = /^(3D[0-9]|[0-9][A-Z][0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)/
-
+/*
 /**
+ * ================================================================================================
  * Parse a callsign into its component parts, including alternate prefixes and multiple indicators.
  *
  * A callsign consists of a prefix, a suffix, and optionally, pre and post indicators.
@@ -44,19 +60,19 @@ const VALID_CALLSIGN_REGEXP = /^(3D[0-9]|[0-9][A-Z][0-9]|[ACDEHJLOPQSTUVXYZ][0-9
 function parseCallsign(callsign, info = {}) {
   callsign = callsign.trim().toUpperCase()
 
-  const callsignParts = callsign.match(EXTENDED_CALLSIGN_REGEXP)
+  const callsignParts = callsign.match(CALLSIGN_REGEXP)
   if (callsignParts) {
     info.call = callsign
     if (callsignParts[1]) {
       info.preindicator = callsignParts[1].slice(0, callsignParts[1].length - 1)
     }
 
-    if (callsignParts[3]) {
-      info.postindicators = callsignParts[3].slice(1, callsignParts[3].length).split("/")
+    if (callsignParts[4]) {
+      info.postindicators = callsignParts[4].slice(1, callsignParts[4].length).split("/")
     }
 
-    if (callsignParts[2] && callsignParts[2].match(VALID_CALLSIGN_REGEXP)) {
-      info.baseCall = callsignParts[2]
+    if (callsignParts[2]) {
+      info.baseCall = callsignParts[2] + callsignParts[3]
 
       processPrefix(info.preindicator || info.baseCall, info)
 
@@ -68,21 +84,6 @@ function parseCallsign(callsign, info = {}) {
 
   return info
 }
-
-// Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
-// except for Eswatini that uses `3DA`
-const PREFIX_REGEXP = /^(3D[A-Z0-9]|[0-9][A-Z]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
-
-// Prefixes should be [letter], [letter letter], [digit letter] or [letter digit],
-//
-// Countries with prefixes that end in a digit
-//   The only allocated prefixes that can have a single letter are:
-//   B (China), F (France), G (United Kingdom), I (Italy), K (USA), M (UK), N (USA), R (Russia) or W (USA)
-//
-//   Any other single letter prefix followed by a digit means the prefix includes the digit
-//
-// Exceptions
-//   Eswatini uses 3DA, a [digit letter letter] suffix
 
 function processPrefix(callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
