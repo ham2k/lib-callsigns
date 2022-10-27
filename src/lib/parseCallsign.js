@@ -58,6 +58,8 @@ const CALLSIGN_REGEXP =
  * @returns {object}
  */
 function parseCallsign(callsign, info = {}) {
+  if (!callsign) return info
+
   callsign = callsign.trim().toUpperCase()
 
   const callsignParts = callsign.match(CALLSIGN_REGEXP)
