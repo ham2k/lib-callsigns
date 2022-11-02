@@ -1,5 +1,5 @@
 {
-  "root": "libs/data/callsigns",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/data/callsigns/src",
   "projectType": "library",
   "targets": {
@@ -22,9 +22,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/data/callsigns"],
+      "outputs": ["{workspaceRoot}/coverage/libs/data/callsigns"],
       "options": {
-        "jestConfig": "libs/data/callsigns/jest.config.js",
+        "jestConfig": "libs/data/callsigns/jest.config.ts",
         "passWithNoTests": true
       }
     }
