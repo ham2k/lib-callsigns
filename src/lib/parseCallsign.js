@@ -18,6 +18,21 @@ const CALLSIGN_REGEXP =
   /^([A-Z0-9]+\/){0,1}(3D[A-Z0-9]|[0-9][A-Z][0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
 
 /*
+  `^ ... $` to match the entire string and fail if the "callsign" has extraneous contents.
+
+  Preindicator:
+  `( [A-Z0-9]+ \/ ) {0,1}` to match zero or one "preindicators", composed of letters and digits and ending in `/`
+
+  Prefix:
+  `( 3D[A-Z0-9] | [0-9][A-Z][0-9] | [ACDEHJLOPQSTUVXYZ][0-9] | [A-Z]{1,2}[0-9] )` to match the four types of prefixes allowed:
+      - The exception for 3D allowing digit-letter-letter-digit
+      - Any digit-letter-digit
+      - Any letter-digit
+
+  ([A-Z0-9]+)
+  (\/[A-Z0-9/]+){0,1}
+ */
+
 /**
  * ================================================================================================
  * Parse a callsign into its component parts, including alternate prefixes and multiple indicators.

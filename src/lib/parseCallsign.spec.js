@@ -473,5 +473,15 @@ describe("Callsign Parsing", () => {
         preindicator: "YV5",
       })
     })
+    it("should recognize bad callsigns", () => {
+      expect(parseCallsign("Y5BAD")).toEqual({
+        call: "YV5/TM1NOCOVID",
+        baseCall: "TM1NOCOVID",
+        prefix: "YV5",
+        ituPrefix: "YV",
+        digit: "5",
+        preindicator: "YV5",
+      })
+    })
   })
 })
