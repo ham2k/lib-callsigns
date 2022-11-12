@@ -1,6 +1,6 @@
 // Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
-// except for Eswatini that uses `3DA`
-const PREFIX_REGEXP = /^(3D[A-Z0-9]|[0-9][A-Z]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
+// except for Eswatini that uses `3DA` and Niger with `5UA`
+const PREFIX_REGEXP = /^(3D[A-Z0-9]|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
 
 // Prefixes should be [letter], [letter letter], [digit letter] or [letter digit],
 //
@@ -11,11 +11,12 @@ const PREFIX_REGEXP = /^(3D[A-Z0-9]|[0-9][A-Z]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,
 //   Any other single letter prefix followed by a digit means the prefix includes the digit
 //
 // Exceptions
-//   Eswatini uses 3DA, a [digit letter letter] suffix
+//   Eswatini uses 3DA, a [digit letter letter] prefix
+//   Niger uses 5UA
 
 // Basic regexp that identifies a callsign and any pre- and post-indicators.
 const CALLSIGN_REGEXP =
-  /^([A-Z0-9]+\/){0,1}(3D[A-Z0-9]|[0-9][A-Z][0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
+  /^([A-Z0-9]+\/){0,1}([0-9][A-Z]{1,2}[0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
 
 /*
   `^ ... $` to match the entire string and fail if the "callsign" has extraneous contents.

@@ -27,10 +27,8 @@ describe("Callsign Parsing", () => {
     })
 
     it("should ignore invalid prefixes", () => {
-      expect(parseCallsign("10N").baseCall).toBe(undefined)
-      expect(parseCallsign("10N0").baseCall).toBe(undefined)
-      expect(parseCallsign("1AB0").baseCall).toBe(undefined)
-      expect(parseCallsign("1AB0C").baseCall).toBe(undefined)
+      expect(processPrefix("10N").prefix).toBe(undefined)
+      expect(processPrefix("10N0").prefix).toBe(undefined)
     })
 
     it("should handle one character prefixes", () => {
@@ -100,6 +98,12 @@ describe("Callsign Parsing", () => {
         prefix: "3DA1",
         ituPrefix: "3DA",
         digit: "1",
+      })
+      expect(processPrefix("5UA99WS")).toEqual({
+        prefix: "5UA9",
+        extendedPrefix: "5UA99",
+        ituPrefix: "5UA",
+        digit: "9",
       })
     })
 
@@ -395,7 +399,6 @@ describe("Callsign Parsing", () => {
       expect(parseCallsign("10N0N")).toEqual({})
       expect(parseCallsign("0N/KL7")).toEqual({})
       expect(parseCallsign("YV5/N0/KL7")).toEqual({})
-      expect(parseCallsign("5NN5NN")).toEqual({})
     })
 
     it("accepts some callsigns that have trailing numbers", () => {
@@ -465,16 +468,6 @@ describe("Callsign Parsing", () => {
         digit: "4",
       })
       expect(parseCallsign("YV5/TM1NOCOVID")).toEqual({
-        call: "YV5/TM1NOCOVID",
-        baseCall: "TM1NOCOVID",
-        prefix: "YV5",
-        ituPrefix: "YV",
-        digit: "5",
-        preindicator: "YV5",
-      })
-    })
-    it("should recognize bad callsigns", () => {
-      expect(parseCallsign("Y5BAD")).toEqual({
         call: "YV5/TM1NOCOVID",
         baseCall: "TM1NOCOVID",
         prefix: "YV5",
