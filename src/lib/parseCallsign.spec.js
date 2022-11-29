@@ -459,6 +459,14 @@ describe("Callsign Parsing", () => {
         ituPrefix: "TM",
         digit: "1",
       })
+      expect(parseCallsign("R1155RW")).toEqual({
+        call: "R1155RW",
+        baseCall: "R1155RW",
+        extendedPrefix: "R1155",
+        prefix: "R1",
+        ituPrefix: "R",
+        digit: "1",
+      })
       expect(parseCallsign("TM40PARTY")).toEqual({
         call: "TM40PARTY",
         baseCall: "TM40PARTY",
@@ -474,6 +482,40 @@ describe("Callsign Parsing", () => {
         ituPrefix: "YV",
         digit: "5",
         preindicator: "YV5",
+      })
+    })
+
+    it("should handle special exceptions (see README)", () => {
+      expect(parseCallsign("D9K")).toEqual({
+        call: "D9K",
+        baseCall: "D9K",
+        prefix: "D9",
+        ituPrefix: "D9",
+        digit: "",
+      })
+
+      expect(parseCallsign("H2T")).toEqual({
+        call: "H2T",
+        baseCall: "H2T",
+        prefix: "H2",
+        ituPrefix: "H2",
+        digit: "",
+      })
+
+      expect(parseCallsign("C6AFO")).toEqual({
+        call: "C6AFO",
+        baseCall: "C6AFO",
+        prefix: "C6",
+        ituPrefix: "C6",
+        digit: "",
+      })
+
+      expect(parseCallsign("5UAIHM")).toEqual({
+        call: "5UAIHM",
+        baseCall: "5UAIHM",
+        prefix: "5U",
+        ituPrefix: "5U",
+        digit: "",
       })
     })
   })

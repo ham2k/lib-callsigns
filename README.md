@@ -26,6 +26,8 @@ The best source of information is the [Wikipedia Article on Amateur radio call s
 
 - Fiji and Swaziland are assigned 3DN–3DZ and 3DA–3DM respectively, so they should choose also the third character from the left to produce unique call signs, but in practise do not. Fiji has issued many call signs with a '3D' prefix and a '2' numeral separator. In theory this does not distinguish their call signs from Swaziland which is issued the 3DA–3DM block.
 
+- Niger seems to have issued callsigns with no separator, like Bahamas or Korea, but unlike those other countries, their prefix has the number first instead of last. For example [5UAIHM](https://www.qrz.com/db/5UAIHM).
+
 ### Special Event callsigns
 
 - Often have suffixes with more than four characters.
