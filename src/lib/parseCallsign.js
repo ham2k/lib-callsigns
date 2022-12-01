@@ -1,6 +1,6 @@
 // Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
-// except for Eswatini that uses `3DA` and Niger with `5UA`
-const PREFIX_REGEXP = /^(3D[A-Z0-9]|5U|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
+// except for Eswatini that uses `3DA` and Niger with `5U*`
+const PREFIX_REGEXP = /^(3D[A-Z0-9]|5U[A-Z]*|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
 
 // Prefixes should be [letter], [letter letter], [digit letter] or [letter digit],
 //
@@ -16,7 +16,7 @@ const PREFIX_REGEXP = /^(3D[A-Z0-9]|5U|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][0-9]|
 
 // Basic regexp that identifies a callsign and any pre- and post-indicators.
 const CALLSIGN_REGEXP =
-  /^([A-Z0-9]+\/){0,1}(5U|[0-9][A-Z]{1,2}[0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
+  /^([A-Z0-9]+\/){0,1}(5U[A-Z]*|[0-9][A-Z]{1,2}[0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
 
 /*
   `^ ... $` to match the entire string and fail if the "callsign" has extraneous contents.
@@ -119,8 +119,10 @@ function processPrefix(callsign, info = {}) {
 const DIGITS_REGEXP = /^[0-9]+$/
 
 // Countries that allow/require postindicators to override the prefix
-//   Includes US, Canada & Peru
-const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHPG]|V[AEYO]|O[ABC]|CY|K|W|)[0-9]*$/
+//  Includes US, Canada reciprocal licenses and dxcc locations like KL, KH8 or CY
+//  Peru O[ABC]
+//  Bermuda VP9
+const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHPG]|K|W|V[AEYO]|CY|O[ABC]|VP9)[0-9]*$/
 
 // List of well known postmodifier indicators
 const KNOWN_INDICATORS = ["QRP", "P", "M", "AM", "MM", "AA", "AG", "AE", "KT", "R"]
@@ -142,7 +144,7 @@ function processPostindicator(indicator, info = {}) {
     info.indicators = info.indicators || []
     info.indicators.push(indicator)
   } else {
-    // Allow postfix entity indicators (should have been a prefix, but people sometimes do this)\
+    // Allow postfix entity indicators (should have been a prefix, but people sometimes do this)
     // but only if it matches a principal entity prefix (i.e. ok for `G` or `G1` in England but not 'M')
     const indicatorParts = processPrefix(indicator)
     if (KNOWN_ENTITIES.indexOf(indicatorParts.ituPrefix) >= 0) {

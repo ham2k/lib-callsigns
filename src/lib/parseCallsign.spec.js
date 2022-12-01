@@ -235,6 +235,26 @@ describe("Callsign Parsing", () => {
       })
     })
 
+    it("should recognize postfixed prefixes for countries that require them, such as Peru or Bermuda", () => {
+      expect(parseCallsign("N0CALL/OA")).toEqual({
+        call: "N0CALL/OA",
+        baseCall: "N0CALL",
+        prefix: "OA",
+        digit: "",
+        ituPrefix: "OA",
+        postindicators: ["OA"],
+      })
+
+      expect(parseCallsign("N0CALL/VP9")).toEqual({
+        call: "N0CALL/VP9",
+        baseCall: "N0CALL",
+        prefix: "VP9",
+        digit: "9",
+        ituPrefix: "VP",
+        postindicators: ["VP9"],
+      })
+    })
+
     it("should recognize prefixes that end in digits and then are followed by the separator digit", () => {
       expect(parseCallsign("V67C")).toEqual({
         call: "V67C",
@@ -332,6 +352,26 @@ describe("Callsign Parsing", () => {
         ituPrefix: "HK",
         digit: "0",
         postindicators: ["HK0"],
+      })
+    })
+
+    it("should handle short calls with potential prefix/postfix confusion", () => {
+      expect(parseCallsign("KH0/K0H")).toEqual({
+        call: "KH0/K0H",
+        baseCall: "K0H",
+        prefix: "KH0",
+        ituPrefix: "KH",
+        digit: "0",
+        preindicator: "KH0",
+      })
+
+      expect(parseCallsign("K0H/KH0")).toEqual({
+        call: "K0H/KH0",
+        baseCall: "K0H",
+        prefix: "KH0",
+        ituPrefix: "KH",
+        digit: "0",
+        postindicators: ["KH0"],
       })
     })
 
@@ -513,8 +553,8 @@ describe("Callsign Parsing", () => {
       expect(parseCallsign("5UAIHM")).toEqual({
         call: "5UAIHM",
         baseCall: "5UAIHM",
-        prefix: "5U",
-        ituPrefix: "5U",
+        prefix: "5UAIHM",
+        ituPrefix: "5UAIHM",
         digit: "",
       })
     })
