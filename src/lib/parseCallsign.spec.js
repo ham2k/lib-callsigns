@@ -373,6 +373,15 @@ describe("Callsign Parsing", () => {
         digit: "0",
         postindicators: ["KH0"],
       })
+
+      expect(parseCallsign("VP2V/AA7V")).toEqual({
+        call: "VP2V/AA7V",
+        baseCall: "AA7V",
+        prefix: "VP2V",
+        preindicator: "VP2V",
+        ituPrefix: "VP",
+        digit: "2",
+      })
     })
 
     it("should handle bad suffix indicators", () => {

@@ -106,10 +106,16 @@ function parseCallsign(callsign, info = {}) {
 function processPrefix(callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
   if (prefixParts) {
-    info.ituPrefix = prefixParts[1]
-    info.digit = prefixParts[2]
-    info.prefix = info.ituPrefix + info.digit
-    if (prefixParts[3]) info.extendedPrefix = info.prefix + prefixParts[3]
+    if (KNOWN_ENTITIES.indexOf(callsign) >= 0) {
+      info.ituPrefix = prefixParts[1]
+      info.digit = prefixParts[2]
+      info.prefix = callsign
+    } else {
+      info.ituPrefix = prefixParts[1]
+      info.digit = prefixParts[2]
+      info.prefix = info.ituPrefix + info.digit
+      if (prefixParts[3]) info.extendedPrefix = info.prefix + prefixParts[3]
+    }
   }
 
   return info
