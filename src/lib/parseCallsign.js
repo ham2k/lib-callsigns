@@ -73,7 +73,7 @@ const CALLSIGN_REGEXP =
  * @param {string} callsign
  * @returns {object}
  */
-function parseCallsign(callsign, info = {}) {
+function parseCallsign (callsign, info = {}) {
   if (!callsign) return info
 
   callsign = callsign.trim().toUpperCase()
@@ -86,7 +86,7 @@ function parseCallsign(callsign, info = {}) {
     }
 
     if (callsignParts[4]) {
-      info.postindicators = callsignParts[4].slice(1, callsignParts[4].length).split("/")
+      info.postindicators = callsignParts[4].slice(1, callsignParts[4].length).split('/')
     }
 
     if (callsignParts[2]) {
@@ -103,7 +103,7 @@ function parseCallsign(callsign, info = {}) {
   return info
 }
 
-function processPrefix(callsign, info = {}) {
+function processPrefix (callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
   if (prefixParts) {
     if (KNOWN_ENTITIES.indexOf(callsign) >= 0) {
@@ -131,12 +131,12 @@ const DIGITS_REGEXP = /^[0-9]+$/
 const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHPG]|K|W|V[AEYO]|CY|O[ABC]|VP9)[0-9]*$/
 
 // List of well known postmodifier indicators
-const KNOWN_INDICATORS = ["QRP", "P", "M", "AM", "MM", "AA", "AG", "AE", "KT", "R"]
+const KNOWN_INDICATORS = ['QRP', 'P', 'M', 'AM', 'MM', 'AA', 'AG', 'AE', 'KT', 'R']
 // Some of these (AA AG AE KT) are defined by the FCC [here](https://www.law.cornell.edu/cfr/text/47/97.119)
 
-const KNOWN_ENTITIES = require("../data/entityPrefixes.json")
+const KNOWN_ENTITIES = require('../data/entityPrefixes.json')
 
-function processPostindicator(indicator, info = {}) {
+function processPostindicator (indicator, info = {}) {
   if (indicator.match(DIGITS_REGEXP)) {
     // If N0CALL/1, parse prefix from callsign, but replace number
     info.digit = indicator
@@ -163,5 +163,5 @@ function processPostindicator(indicator, info = {}) {
 
 module.exports = {
   parseCallsign,
-  processPrefix,
+  processPrefix
 }

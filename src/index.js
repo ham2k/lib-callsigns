@@ -1,5 +1,5 @@
-const { parseCallsign } = require("./lib/parseCallsign")
+const { parseCallsign } = require('./lib/parseCallsign')
 
 module.exports = {
-  parseCallsign,
+  parseCallsign
 }
