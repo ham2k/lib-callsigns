@@ -61,7 +61,7 @@ describe("Callsign Parsing", () => {
         digit: "5",
       })
       expect(processPrefix("4U1U")).toEqual({
-        prefix: "4U1",
+        prefix: "4U1U",
         ituPrefix: "4U",
         digit: "1",
       })

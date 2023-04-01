@@ -1,5 +1,15 @@
 {
-  "name": "@ham2k/data/callsigns",
+  "name": "@ham2k/lib-callsigns",
   "version": "0.0.1",
-  "type": "commonjs"
+  "type": "commonjs",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "standard": "^17.0.0"
+  },
+  "scripts": {
+    "test": "jest"
+  }
 }

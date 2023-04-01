@@ -1,3 +1,7 @@
+# lib-callsigns
+
+A JavaScript library for parsing Amateur Radio callsigns.
+
 # Callsign structure
 
 The best source of information is the [Wikipedia Article on Amateur radio call signs](https://en.wikipedia.org/wiki/Amateur_radio_call_signs)
