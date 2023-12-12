@@ -1,7 +1,8 @@
 {
   "name": "@ham2k/lib-callsigns",
-  "version": "0.0.1",
-  "type": "commonjs",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.js",
   "exports": {
     ".": "./src/index.js"
   },
@@ -10,9 +11,11 @@
     "standard": "^17.0.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
   },
   "standard": {
-    "env": [ "jest" ]
+    "env": [
+      "jest"
+    ]
   }
 }

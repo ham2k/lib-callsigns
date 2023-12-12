@@ -1,4 +1,4 @@
-const { parseCallsign, processPrefix } = require('./parseCallsign')
+import { parseCallsign, processPrefix } from './parseCallsign'
 
 describe('Callsign Parsing', () => {
   describe('processPrefix', () => {
@@ -483,6 +483,14 @@ describe('Callsign Parsing', () => {
         prefix: '3X2',
         ituPrefix: '3X',
         digit: '2'
+      })
+
+      expect(parseCallsign('TI5N5BEK')).toEqual({
+        call: 'TI5N5BEK',
+        baseCall: 'TI5N5BEK',
+        prefix: 'TI5',
+        ituPrefix: 'TI',
+        digit: '5'
       })
     })
 

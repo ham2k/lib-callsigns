@@ -1,3 +1,5 @@
+import KNOWN_ENTITIES from '../data/entityPrefixes.json'
+
 // Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
 // except for Eswatini that uses `3DA` and Niger with `5U*`
 const PREFIX_REGEXP = /^(3D[A-Z0-9]|5U[A-Z]*|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
@@ -73,7 +75,7 @@ const CALLSIGN_REGEXP =
  * @param {string} callsign
  * @returns {object}
  */
-function parseCallsign (callsign, info = {}) {
+export function parseCallsign (callsign, info = {}) {
   if (!callsign) return info
 
   callsign = callsign.trim().toUpperCase()
@@ -103,7 +105,7 @@ function parseCallsign (callsign, info = {}) {
   return info
 }
 
-function processPrefix (callsign, info = {}) {
+export function processPrefix (callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
   if (prefixParts) {
     if (KNOWN_ENTITIES.indexOf(callsign) >= 0) {
@@ -134,8 +136,6 @@ const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHPG]|K|W|V[AEYO]|CY|O[ABC]|VP9)[0-9]*
 const KNOWN_INDICATORS = ['QRP', 'P', 'M', 'AM', 'MM', 'AA', 'AG', 'AE', 'KT', 'R']
 // Some of these (AA AG AE KT) are defined by the FCC [here](https://www.law.cornell.edu/cfr/text/47/97.119)
 
-const KNOWN_ENTITIES = require('../data/entityPrefixes.json')
-
 function processPostindicator (indicator, info = {}) {
   if (indicator.match(DIGITS_REGEXP)) {
     // If N0CALL/1, parse prefix from callsign, but replace number
@@ -161,7 +161,3 @@ function processPostindicator (indicator, info = {}) {
   return info
 }
 
-module.exports = {
-  parseCallsign,
-  processPrefix
-}
