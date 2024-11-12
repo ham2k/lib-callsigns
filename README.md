@@ -19,12 +19,9 @@ The best source of information is the [Wikipedia Article on Amateur radio call s
 ## Exceptions
 
 ### Callsigns with no separating numeral
-
-- Korea has issued a special event callsign of D9K. The 'D9' is the ITU prefix for South Korea, so they have issued a call with no separating numeral.
-
-- Bahamas issues call signs without a separating numeral. They are assigned the C6A–C6Z block, and the '6' is part of the 2-character prefix. Examples are as found on QRZ.COM (C6AFO, C6AGB, etc.).
-
-- Cyprus has issued H2T as a special event call sign. Whereas Cyprus is assigned the H2A–H2Z block, there is then no numeral separator, just a one-letter suffix.
+- Sometimes countries issue a special event callsign using a prefix that includes a number, without any extra separating numeral.
+For example, Bahamas has assigned the C6A-C6Z block. The prefix for "C6AFO" would be "C6", with no number.
+Other examples, D9K for Korea, H2T for Cyprus, S9Z for Sao Tome.
 
 - Panama allows the use of "HP/" as a prefix when operating from a cruise ship registered in Panama, so again, a prefix without a numeral.
 

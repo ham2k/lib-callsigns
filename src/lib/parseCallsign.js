@@ -1,21 +1,5 @@
 import KNOWN_ENTITIES from '../data/entityPrefixes.json'
 
-// Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
-// except for Eswatini that uses `3DA` and Niger with `5U*`
-const PREFIX_REGEXP = /^(3D[A-Z0-9]|5U[A-Z]*|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
-
-// Prefixes should be [letter], [letter letter], [digit letter] or [letter digit],
-//
-// Countries with prefixes that end in a digit
-//   The only allocated prefixes that can have a single letter are:
-//   B (China), F (France), G (United Kingdom), I (Italy), K (USA), M (UK), N (USA), R (Russia) or W (USA)
-//
-//   Any other single letter prefix followed by a digit means the prefix includes the digit
-//
-// Exceptions
-//   Eswatini uses 3DA, a [digit letter letter] prefix
-//   Niger uses 5UA
-
 // Basic regexp that identifies a callsign and any pre- and post-indicators.
 const CALLSIGN_REGEXP =
   /^([A-Z0-9]+\/){0,1}(5U[A-Z]*|[0-9][A-Z]{1,2}[0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
@@ -105,18 +89,39 @@ export function parseCallsign (callsign, info = {}) {
   return info
 }
 
+// Basic regexp that indentifies the prefix, digit and suffix parts of a callsign.
+// except for Eswatini that uses `3DA` and Niger with `5U*`
+const PREFIX_REGEXP = /^(3D[A-Z0-9]|5U[A-Z]|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2})([0-9]{0,1})([0-9]*)/
+
+// Prefixes should be [letter], [letter letter], [digit letter] or [letter digit],
+//
+// Countries with prefixes that end in a digit
+//   The only allocated prefixes that can have a single letter are:
+//   B (China), F (France), G (United Kingdom), I (Italy), K (USA), M (UK), N (USA), R (Russia) or W (USA)
+//
+//   Any other single letter prefix followed by a digit means the prefix includes the digit
+//
+// Exceptions
+//   Eswatini uses 3DA, a [digit letter letter] prefix
+//   Niger uses 5UA
+
+const SPECIAL_PREFIX_REGEXP = /^(5U)\a/
+
 export function processPrefix (callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
   if (prefixParts) {
+    info.ituPrefix = prefixParts[1]
+    info.digit = prefixParts[2]
     if (KNOWN_ENTITIES.indexOf(callsign) >= 0) {
-      info.ituPrefix = prefixParts[1]
-      info.digit = prefixParts[2]
       info.prefix = callsign
     } else {
-      info.ituPrefix = prefixParts[1]
-      info.digit = prefixParts[2]
       info.prefix = info.ituPrefix + info.digit
       if (prefixParts[3]) info.extendedPrefix = info.prefix + prefixParts[3]
+    }
+
+    // Niger has assigned callsigns with no separator number, which we need to handle as a special case
+    if (info.ituPrefix.startsWith('5U')) {
+      info.ituPrefix = '5U'
     }
   }
 

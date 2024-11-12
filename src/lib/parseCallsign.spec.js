@@ -102,7 +102,7 @@ describe('Callsign Parsing', () => {
       expect(processPrefix('5UA99WS')).toEqual({
         prefix: '5UA9',
         extendedPrefix: '5UA99',
-        ituPrefix: '5UA',
+        ituPrefix: '5U',
         digit: '9'
       })
     })
@@ -551,6 +551,14 @@ describe('Callsign Parsing', () => {
         digit: ''
       })
 
+      expect(parseCallsign('S9Z')).toEqual({
+        call: 'S9Z',
+        baseCall: 'S9Z',
+        prefix: 'S9',
+        ituPrefix: 'S9',
+        digit: ''
+      })
+
       expect(parseCallsign('H2T')).toEqual({
         call: 'H2T',
         baseCall: 'H2T',
@@ -570,8 +578,8 @@ describe('Callsign Parsing', () => {
       expect(parseCallsign('5UAIHM')).toEqual({
         call: '5UAIHM',
         baseCall: '5UAIHM',
-        prefix: '5UAIHM',
-        ituPrefix: '5UAIHM',
+        prefix: '5UA',
+        ituPrefix: '5U',
         digit: ''
       })
     })
