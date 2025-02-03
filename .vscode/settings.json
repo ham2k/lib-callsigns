@@ -1,0 +1,14 @@
+{
+    "jest.nodeEnv": {
+        "NODE_OPTIONS": "--experimental-vm-modules"
+    },
+    "terminal.integrated.env.linux": {
+        "NODE_OPTIONS": "--experimental-vm-modules"
+    },
+    "terminal.integrated.env.windows": {
+        "NODE_OPTIONS": "--experimental-vm-modules"
+    },
+    "terminal.integrated.env.osx": {
+        "NODE_OPTIONS": "--experimental-vm-modules"
+    }
+}
