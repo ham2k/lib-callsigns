@@ -166,6 +166,56 @@ describe('Callsign Parsing', () => {
       })
     })
 
+    it('should handle SSIDs', () => {
+      expect(parseCallsign('N0CALL-1')).toEqual({
+        call: 'N0CALL',
+        baseCall: 'N0CALL',
+        prefix: 'N0',
+        ituPrefix: 'N',
+        digit: '0',
+        ssid: '1'
+      })
+
+      expect(parseCallsign('N0CALL-SPECIAL-EVENT')).toEqual({
+        call: 'N0CALL',
+        baseCall: 'N0CALL',
+        prefix: 'N0',
+        ituPrefix: 'N',
+        digit: '0',
+        ssid: 'SPECIAL-EVENT'
+      })
+
+      expect(parseCallsign('KL7/N0CALL-ALASKA')).toEqual({
+        call: 'KL7/N0CALL',
+        baseCall: 'N0CALL',
+        prefix: 'KL7',
+        ituPrefix: 'KL',
+        digit: '7',
+        ssid: 'ALASKA',
+        preindicator: 'KL7'
+      })
+
+      expect(parseCallsign('N0CALL/VE-YUKON')).toEqual({
+        call: 'N0CALL/VE',
+        baseCall: 'N0CALL',
+        prefix: 'VE',
+        ituPrefix: 'VE',
+        digit: '',
+        ssid: 'YUKON',
+        postindicators: ['VE']
+      })
+
+      expect(parseCallsign('N0CALL-YUKON/VE')).toEqual({
+        call: 'N0CALL/VE',
+        baseCall: 'N0CALL',
+        prefix: 'VE',
+        ituPrefix: 'VE',
+        digit: '',
+        ssid: 'YUKON',
+        postindicators: ['VE']
+      })
+    })
+
     it('should recognize US & Canada suffix indicators', () => {
       // Only the US, Canada & Peru use callsign suffixes (AFAIK), because:
       // * the baseCall is using their license in another other country,
@@ -543,6 +593,15 @@ describe('Callsign Parsing', () => {
     })
 
     it('should handle special exceptions (see README)', () => {
+      expect(parseCallsign('TU/TA2YGT')).toEqual({
+        call: 'TU/TA2YGT',
+        baseCall: 'TA2YGT',
+        prefix: 'TU',
+        ituPrefix: 'TU',
+        digit: '',
+        preindicator: 'TU'
+      })
+
       expect(parseCallsign('D9K')).toEqual({
         call: 'D9K',
         baseCall: 'D9K',
@@ -582,6 +641,7 @@ describe('Callsign Parsing', () => {
         ituPrefix: '5U',
         digit: ''
       })
+
     })
   })
 })

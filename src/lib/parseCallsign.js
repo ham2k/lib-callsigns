@@ -4,6 +4,9 @@ import KNOWN_ENTITIES from '../data/entityPrefixes.json'
 const CALLSIGN_REGEXP =
   /^([A-Z0-9]+\/){0,1}(5U[A-Z]*|[0-9][A-Z]{1,2}[0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
 
+// Regexp to extract SSID from callsign
+const SSID_REGEXP = /-[A-Z0-9-]{1,}/
+
 /*
   `^ ... $` to match the entire string and fail if the "callsign" has extraneous contents.
 
@@ -11,8 +14,8 @@ const CALLSIGN_REGEXP =
   `( [A-Z0-9]+ \/ ) {0,1}` to match zero or one "preindicators", composed of letters and digits and ending in `/`
 
   Prefix:
-  `( 3D[A-Z0-9] | [0-9][A-Z][0-9] | [ACDEHJLOPQSTUVXYZ][0-9] | [A-Z]{1,2}[0-9] )` to match the four types of prefixes allowed:
-      - The exception for 3D allowing digit-letter-letter-digit
+  `( 5U[A-Z] | [0-9][A-Z][0-9] | [ACDEHJLOPQSTUVXYZ][0-9] | [A-Z]{1,2}[0-9] )` to match the four types of prefixes allowed:
+      - An exception for 5U allowing prefixes without a separating numeral (see README)
       - Any digit-letter-digit
       - Any letter-digit
 
@@ -55,6 +58,7 @@ const CALLSIGN_REGEXP =
  * - `preindicator`: if present, any preindicator
  * - `postindicators`: if present, an array of postindicators
  * - `indicators`: if present, any well-known indicators such as QRP, P, MM, etc.
+ * - `ssid`: if present, a "secondary station identifier"
  *
  * @param {string} callsign
  * @returns {object}
@@ -63,6 +67,12 @@ export function parseCallsign (callsign, info = {}) {
   if (!callsign) return info
 
   callsign = callsign.trim().toUpperCase()
+
+  const ssid = callsign.match(SSID_REGEXP)
+  if (ssid) {
+    info.ssid = ssid[0].slice(1)
+    callsign = callsign.replace(ssid[0], '')
+  }
 
   const callsignParts = callsign.match(CALLSIGN_REGEXP)
   if (callsignParts) {
@@ -109,15 +119,19 @@ const SPECIAL_PREFIX_REGEXP = /^(5U)\a/
 
 export function processPrefix (callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
+console.log('processPrefix', {callsign, prefixParts})
   if (prefixParts) {
     info.ituPrefix = prefixParts[1]
     info.digit = prefixParts[2]
     if (KNOWN_ENTITIES.indexOf(callsign) >= 0) {
+      console.log('KNOWN_ENTITIES', callsign)
       info.prefix = callsign
     } else {
+      console.log('not known', callsign)
       info.prefix = info.ituPrefix + info.digit
       if (prefixParts[3]) info.extendedPrefix = info.prefix + prefixParts[3]
     }
+    console.log('info', info)
 
     // Niger has assigned callsigns with no separator number, which we need to handle as a special case
     if (info.ituPrefix.startsWith('5U')) {
