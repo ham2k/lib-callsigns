@@ -119,19 +119,16 @@ const SPECIAL_PREFIX_REGEXP = /^(5U)\a/
 
 export function processPrefix (callsign, info = {}) {
   const prefixParts = callsign.match(PREFIX_REGEXP)
-console.log('processPrefix', {callsign, prefixParts})
+
   if (prefixParts) {
     info.ituPrefix = prefixParts[1]
     info.digit = prefixParts[2]
     if (KNOWN_ENTITIES.indexOf(callsign) >= 0) {
-      console.log('KNOWN_ENTITIES', callsign)
       info.prefix = callsign
     } else {
-      console.log('not known', callsign)
       info.prefix = info.ituPrefix + info.digit
       if (prefixParts[3]) info.extendedPrefix = info.prefix + prefixParts[3]
     }
-    console.log('info', info)
 
     // Niger has assigned callsigns with no separator number, which we need to handle as a special case
     if (info.ituPrefix.startsWith('5U')) {
