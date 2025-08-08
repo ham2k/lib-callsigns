@@ -405,6 +405,27 @@ describe('Callsign Parsing', () => {
       })
     })
 
+    it('should handle MM as a prefix or postfix indicator', () => {
+      expect(parseCallsign('N0CALL/MM')).toEqual({
+        call: 'N0CALL/MM',
+        baseCall: 'N0CALL',
+        prefix: 'N0',
+        ituPrefix: 'N',
+        digit: '0',
+        postindicators: ['MM'],
+        indicators: ['MM']
+      })
+
+      expect(parseCallsign('MM/N0CALL')).toEqual({
+        call: 'MM/N0CALL',
+        baseCall: 'N0CALL',
+        prefix: 'MM',
+        ituPrefix: 'MM',
+        digit: '',
+        preindicator: 'MM'
+      })
+    })
+
     it('should handle short calls with potential prefix/postfix confusion', () => {
       expect(parseCallsign('KH0/K0H')).toEqual({
         call: 'KH0/K0H',
