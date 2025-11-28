@@ -23,6 +23,19 @@ const SSID_REGEXP = /-[A-Z0-9-]{1,}/
   (\/[A-Z0-9/]+){0,1}
  */
 
+export interface ParsedCallsign {
+  call?: string
+  baseCall?: string
+  prefix?: string
+  extendedPrefix?: string
+  ituPrefix?: string
+  digit?: string
+  preindicator?: string
+  postindicators?: string[]
+  indicators?: string[]
+  ssid?: string
+}
+
 /**
  * ================================================================================================
  * Parse a callsign into its component parts, including alternate prefixes and multiple indicators.
@@ -60,10 +73,11 @@ const SSID_REGEXP = /-[A-Z0-9-]{1,}/
  * - `indicators`: if present, any well-known indicators such as QRP, P, MM, etc.
  * - `ssid`: if present, a "secondary station identifier"
  *
- * @param {string} callsign
- * @returns {object}
+ * @param callsign - The callsign string to parse
+ * @param info - Optional existing info object to merge results into
+ * @returns Parsed callsign information
  */
-export function parseCallsign (callsign, info = {}) {
+export function parseCallsign(callsign: string | null | undefined, info: ParsedCallsign = {}): ParsedCallsign {
   if (!callsign) return info
 
   callsign = callsign.trim().toUpperCase()
@@ -117,13 +131,13 @@ const PREFIX_REGEXP = /^(3D[A-Z0-9]|5U[A-Z]|[0-9][A-Z]{1,2}|[ACDEHJLOPQSTUVXYZ][
 
 const SPECIAL_PREFIX_REGEXP = /^(5U)\a/
 
-export function processPrefix (callsign, info = {}) {
+export function processPrefix(callsign: string, info: ParsedCallsign = {}): ParsedCallsign {
   const prefixParts = callsign.match(PREFIX_REGEXP)
 
   if (prefixParts) {
     info.ituPrefix = prefixParts[1]
     info.digit = prefixParts[2]
-    if (KNOWN_ENTITIES.indexOf(callsign) >= 0) {
+    if ((KNOWN_ENTITIES as readonly string[]).indexOf(callsign) >= 0) {
       info.prefix = callsign
     } else {
       info.prefix = info.ituPrefix + info.digit
@@ -131,7 +145,7 @@ export function processPrefix (callsign, info = {}) {
     }
 
     // Niger has assigned callsigns with no separator number, which we need to handle as a special case
-    if (info.ituPrefix.startsWith('5U')) {
+    if (info.ituPrefix?.startsWith('5U')) {
       info.ituPrefix = '5U'
     }
   }
@@ -152,7 +166,7 @@ const SUFFIXED_COUNTRY_REGEXP = /^([AKNW][LHPG]|K|W|V[AEYO]|CY|O[ABC]|VP9)[0-9]*
 const KNOWN_INDICATORS = ['QRP', 'P', 'M', 'AM', 'MM', 'AA', 'AG', 'AE', 'KT', 'R']
 // Some of these (AA AG AE KT) are defined by the FCC [here](https://www.law.cornell.edu/cfr/text/47/97.119)
 
-function processPostindicator (indicator, info = {}) {
+function processPostindicator(indicator: string, info: ParsedCallsign = {}): ParsedCallsign {
   if (indicator.match(DIGITS_REGEXP)) {
     // If N0CALL/1, parse prefix from callsign, but replace number
     info.digit = indicator
@@ -169,7 +183,7 @@ function processPostindicator (indicator, info = {}) {
     // Allow postfix entity indicators (should have been a prefix, but people sometimes do this)
     // but only if it matches a principal entity prefix (i.e. ok for `G` or `G1` in England but not 'M')
     const indicatorParts = processPrefix(indicator)
-    if (KNOWN_ENTITIES.indexOf(indicatorParts.ituPrefix) >= 0) {
+    if ((KNOWN_ENTITIES as readonly string[]).indexOf(indicatorParts.ituPrefix || '') >= 0) {
       processPrefix(indicator, info)
     }
   }

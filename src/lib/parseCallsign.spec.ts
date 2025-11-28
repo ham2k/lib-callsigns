@@ -161,8 +161,7 @@ describe('Callsign Parsing', () => {
         prefix: 'YV',
         ituPrefix: 'YV',
         digit: '',
-        preindicator: 'YV',
-        postmodifier: undefined
+        preindicator: 'YV'
       })
     })
 
@@ -666,3 +665,4 @@ describe('Callsign Parsing', () => {
     })
   })
 })
+
