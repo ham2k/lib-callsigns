@@ -32,6 +32,7 @@ export interface ParsedCallsign {
   digit?: string
   preindicator?: string
   postindicators?: string[]
+  prefixOverride?: string
   indicators?: string[]
   ssid?: string
 }
@@ -70,6 +71,7 @@ export interface ParsedCallsign {
  * - `prefix`: the prefix of the callsign, including any changes from indicators
  * - `preindicator`: if present, any preindicator
  * - `postindicators`: if present, an array of postindicators
+ * - `prefixOverride`: if present, indicates the fact that prefix was overriden by a pre or postindicator
  * - `indicators`: if present, any well-known indicators such as QRP, P, MM, etc.
  * - `ssid`: if present, a "secondary station identifier"
  *
@@ -102,14 +104,18 @@ export function parseCallsign(callsign: string | null | undefined, info: ParsedC
     if (callsignParts[2]) {
       info.baseCall = callsignParts[2] + callsignParts[3]
 
-      processPrefix(info.preindicator || info.baseCall, info)
-
-      for (const postindicator of info.postindicators || []) {
-        processPostindicator(postindicator, info)
+      if (info.preindicator) {
+        info.prefixOverride = info.preindicator
+        processPrefix(info.preindicator, info)
+      } else {
+        processPrefix(info.baseCall, info)
       }
     }
-  }
 
+    for (const postindicator of info.postindicators || []) {
+      processPostindicator(postindicator, info)
+    }
+  }
   return info
 }
 
@@ -173,6 +179,7 @@ function processPostindicator(indicator: string, info: ParsedCallsign = {}): Par
     info.prefix = info.ituPrefix + info.digit
   } else if (indicator.match(SUFFIXED_COUNTRY_REGEXP)) {
     // If N0CALL/KH6, use indicator as prefix
+    info.prefixOverride = indicator
     processPrefix(indicator, info)
   } else if (KNOWN_INDICATORS.indexOf(indicator) >= 0) {
     // List of well known indicators
@@ -184,6 +191,7 @@ function processPostindicator(indicator: string, info: ParsedCallsign = {}): Par
     // but only if it matches a principal entity prefix (i.e. ok for `G` or `G1` in England but not 'M')
     const indicatorParts = processPrefix(indicator)
     if ((KNOWN_ENTITIES as readonly string[]).indexOf(indicatorParts.ituPrefix || '') >= 0) {
+      info.prefixOverride = indicator
       processPrefix(indicator, info)
     }
   }

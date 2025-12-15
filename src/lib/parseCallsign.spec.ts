@@ -134,7 +134,8 @@ describe('Callsign Parsing', () => {
         prefix: 'YV5',
         ituPrefix: 'YV',
         digit: '5',
-        preindicator: 'YV5'
+        preindicator: 'YV5',
+        prefixOverride: 'YV5'
       })
       expect(parseCallsign('V5/N0CALL')).toEqual({
         call: 'V5/N0CALL',
@@ -142,7 +143,8 @@ describe('Callsign Parsing', () => {
         prefix: 'V5',
         ituPrefix: 'V5',
         digit: '',
-        preindicator: 'V5'
+        preindicator: 'V5',
+        prefixOverride: 'V5'
       })
       expect(parseCallsign('9A5/N0CALL')).toEqual({
         call: '9A5/N0CALL',
@@ -150,7 +152,8 @@ describe('Callsign Parsing', () => {
         prefix: '9A5',
         ituPrefix: '9A',
         digit: '5',
-        preindicator: '9A5'
+        preindicator: '9A5',
+        prefixOverride: '9A5'
       })
     })
 
@@ -161,7 +164,8 @@ describe('Callsign Parsing', () => {
         prefix: 'YV',
         ituPrefix: 'YV',
         digit: '',
-        preindicator: 'YV'
+        preindicator: 'YV',
+        prefixOverride: 'YV'
       })
     })
 
@@ -191,7 +195,8 @@ describe('Callsign Parsing', () => {
         ituPrefix: 'KL',
         digit: '7',
         ssid: 'ALASKA',
-        preindicator: 'KL7'
+        preindicator: 'KL7',
+        prefixOverride: 'KL7'
       })
 
       expect(parseCallsign('N0CALL/VE-YUKON')).toEqual({
@@ -201,7 +206,8 @@ describe('Callsign Parsing', () => {
         ituPrefix: 'VE',
         digit: '',
         ssid: 'YUKON',
-        postindicators: ['VE']
+        postindicators: ['VE'],
+        prefixOverride: 'VE'
       })
 
       expect(parseCallsign('N0CALL-YUKON/VE')).toEqual({
@@ -211,7 +217,8 @@ describe('Callsign Parsing', () => {
         ituPrefix: 'VE',
         digit: '',
         ssid: 'YUKON',
-        postindicators: ['VE']
+        postindicators: ['VE'],
+        prefixOverride: 'VE'
       })
     })
 
@@ -226,7 +233,8 @@ describe('Callsign Parsing', () => {
         prefix: 'KH6',
         digit: '6',
         ituPrefix: 'KH',
-        postindicators: ['KH6']
+        postindicators: ['KH6'],
+        prefixOverride: 'KH6'
       })
 
       expect(parseCallsign('N0CALL/KL')).toEqual({
@@ -235,7 +243,8 @@ describe('Callsign Parsing', () => {
         prefix: 'KL',
         ituPrefix: 'KL',
         digit: '',
-        postindicators: ['KL']
+        postindicators: ['KL'],
+        prefixOverride: 'KL'
       })
 
       expect(parseCallsign('VE0CALL/K6')).toEqual({
@@ -244,7 +253,8 @@ describe('Callsign Parsing', () => {
         prefix: 'K6',
         ituPrefix: 'K',
         digit: '6',
-        postindicators: ['K6']
+        postindicators: ['K6'],
+        prefixOverride: 'K6'
       })
 
       expect(parseCallsign('K0CALL/CY')).toEqual({
@@ -253,7 +263,8 @@ describe('Callsign Parsing', () => {
         prefix: 'CY',
         ituPrefix: 'CY',
         digit: '',
-        postindicators: ['CY']
+        postindicators: ['CY'],
+        prefixOverride: 'CY'
       })
 
       expect(parseCallsign('K0CALL/VE')).toEqual({
@@ -262,7 +273,8 @@ describe('Callsign Parsing', () => {
         prefix: 'VE',
         ituPrefix: 'VE',
         digit: '',
-        postindicators: ['VE']
+        postindicators: ['VE'],
+        prefixOverride: 'VE'
       })
 
       expect(parseCallsign('K0CALL/VE5')).toEqual({
@@ -271,7 +283,8 @@ describe('Callsign Parsing', () => {
         prefix: 'VE5',
         ituPrefix: 'VE',
         digit: '5',
-        postindicators: ['VE5']
+        postindicators: ['VE5'],
+        prefixOverride: 'VE5'
       })
 
       expect(parseCallsign('VE2CALL/VY0')).toEqual({
@@ -280,7 +293,8 @@ describe('Callsign Parsing', () => {
         prefix: 'VY0',
         ituPrefix: 'VY',
         digit: '0',
-        postindicators: ['VY0']
+        postindicators: ['VY0'],
+        prefixOverride: 'VY0'
       })
     })
 
@@ -291,7 +305,8 @@ describe('Callsign Parsing', () => {
         prefix: 'OA',
         digit: '',
         ituPrefix: 'OA',
-        postindicators: ['OA']
+        postindicators: ['OA'],
+        prefixOverride: 'OA'
       })
 
       expect(parseCallsign('N0CALL/VP9')).toEqual({
@@ -300,7 +315,8 @@ describe('Callsign Parsing', () => {
         prefix: 'VP9',
         digit: '9',
         ituPrefix: 'VP',
-        postindicators: ['VP9']
+        postindicators: ['VP9'],
+        prefixOverride: 'VP9'
       })
     })
 
@@ -381,7 +397,8 @@ describe('Callsign Parsing', () => {
         prefix: 'YV',
         ituPrefix: 'YV',
         digit: '',
-        postindicators: ['YV']
+        postindicators: ['YV'],
+        prefixOverride: 'YV'
       })
 
       expect(parseCallsign('N0CALL/P/YV7')).toEqual({
@@ -391,7 +408,8 @@ describe('Callsign Parsing', () => {
         ituPrefix: 'YV',
         digit: '7',
         postindicators: ['P', 'YV7'],
-        indicators: ['P']
+        indicators: ['P'],
+        prefixOverride: 'YV7'
       })
 
       expect(parseCallsign('N0CALL/HK0')).toEqual({
@@ -400,7 +418,8 @@ describe('Callsign Parsing', () => {
         prefix: 'HK0',
         ituPrefix: 'HK',
         digit: '0',
-        postindicators: ['HK0']
+        postindicators: ['HK0'],
+        prefixOverride: 'HK0'
       })
     })
 
@@ -421,7 +440,8 @@ describe('Callsign Parsing', () => {
         prefix: 'MM',
         ituPrefix: 'MM',
         digit: '',
-        preindicator: 'MM'
+        preindicator: 'MM',
+        prefixOverride: 'MM'
       })
     })
 
@@ -432,7 +452,8 @@ describe('Callsign Parsing', () => {
         prefix: 'KH0',
         ituPrefix: 'KH',
         digit: '0',
-        preindicator: 'KH0'
+        preindicator: 'KH0',
+        prefixOverride: 'KH0'
       })
 
       expect(parseCallsign('K0H/KH0')).toEqual({
@@ -441,7 +462,8 @@ describe('Callsign Parsing', () => {
         prefix: 'KH0',
         ituPrefix: 'KH',
         digit: '0',
-        postindicators: ['KH0']
+        postindicators: ['KH0'],
+        prefixOverride: 'KH0'
       })
 
       expect(parseCallsign('VP2V/AA7V')).toEqual({
@@ -449,6 +471,7 @@ describe('Callsign Parsing', () => {
         baseCall: 'AA7V',
         prefix: 'VP2V',
         preindicator: 'VP2V',
+        prefixOverride: 'VP2V',
         ituPrefix: 'VP',
         digit: '2'
       })
@@ -483,7 +506,8 @@ describe('Callsign Parsing', () => {
         digit: '',
         preindicator: 'YV',
         postindicators: ['P'],
-        indicators: ['P']
+        indicators: ['P'],
+        prefixOverride: 'YV'
       })
 
       expect(parseCallsign('YV/N0CALL/P/7')).toEqual({
@@ -494,7 +518,8 @@ describe('Callsign Parsing', () => {
         digit: '7',
         preindicator: 'YV',
         postindicators: ['P', '7'],
-        indicators: ['P']
+        indicators: ['P'],
+        prefixOverride: 'YV'
       })
 
       expect(parseCallsign('YV7/N0CALL/P')).toEqual({
@@ -505,7 +530,8 @@ describe('Callsign Parsing', () => {
         digit: '7',
         preindicator: 'YV7',
         postindicators: ['P'],
-        indicators: ['P']
+        indicators: ['P'],
+        prefixOverride: 'YV7'
       })
     })
 
@@ -608,7 +634,8 @@ describe('Callsign Parsing', () => {
         prefix: 'YV5',
         ituPrefix: 'YV',
         digit: '5',
-        preindicator: 'YV5'
+        preindicator: 'YV5',
+        prefixOverride: 'YV5'
       })
     })
 
@@ -619,7 +646,8 @@ describe('Callsign Parsing', () => {
         prefix: 'TU',
         ituPrefix: 'TU',
         digit: '',
-        preindicator: 'TU'
+        preindicator: 'TU',
+        prefixOverride: 'TU'
       })
 
       expect(parseCallsign('D9K')).toEqual({
