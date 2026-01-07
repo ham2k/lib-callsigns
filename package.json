@@ -1,8 +1,9 @@
 {
   "name": "@ham2k/lib-callsigns",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
@@ -11,7 +12,12 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": {
+        "import": "./dist/index.d.ts",
+        "require": "./dist/index.d.cts"
+      },
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "default": "./dist/index.js"
     }
   },
@@ -21,11 +27,12 @@
     "jest": "^30.2.0",
     "standard": "^17.0.0",
     "ts-jest": "^29.1.0",
+    "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   },
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
-    "build": "tsc",
+    "build": "tsup",
     "type-check": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
