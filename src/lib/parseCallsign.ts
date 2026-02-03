@@ -115,7 +115,7 @@ export function parseCallsign(callsign: string | null | undefined, info: ParsedC
         // For example `K0H/KH0` or `AA7V/VP2V`
         info.baseCall = info.preindicator
         // info.prefixOverride = baseCall
-        info.postindicators = [...info.postindicators || [], baseCall]
+        info.postindicators = [baseCall, ...info.postindicators || []]
         delete info.preindicator
         // processPrefix(baseCall, info)
       } else {
@@ -204,6 +204,14 @@ function processPostindicator(indicator: string, info: ParsedCallsign = {}): Par
     // If N0CALL/P, parse prefix from plain callsign
     info.indicators = info.indicators || []
     info.indicators.push(indicator)
+  } else if (['LU', 'LW', 'AY', 'AX', 'AZ'].includes(info.ituPrefix || '') && indicator.length === 1) {
+    // Argentina uses the first letter of the suffix as a regional designator.
+    // And it allows a postmodifier letter to replace it.
+    // So `LU1ABC` is located in Santiago del Estero,
+    // and `LU5XYZ` is located in Buenos Aires,
+    // but `LU5XYZ/N` is operating from Santiago del Estero.
+
+    // Just ignore the indicator
   } else {
     // Allow postfix entity indicators (should have been a prefix, but people sometimes do this)
     // but only if it matches a principal entity prefix (i.e. ok for `G` or `G1` in England but not 'M')

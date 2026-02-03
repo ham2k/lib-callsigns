@@ -518,6 +518,52 @@ describe('Callsign Parsing', () => {
       })
     })
 
+    it('should handle argentinian postindicators', () => {
+      // Argentina uses the first letter of the suffix as a regional designator.
+      // And it allows a postmodifier letter to replace it.
+      // So `LU1ABC` is located in Santiago del Estero,
+      // and `LU5XYZ` is located in Buenos Aires,
+      // but `LU5XYZ/N` is operating from Santiago del Estero.
+      expect(parseCallsign('LU1ABC/F')).toEqual({
+        call: 'LU1ABC/F',
+        baseCall: 'LU1ABC',
+        prefix: 'LU1',
+        ituPrefix: 'LU',
+        digit: '1',
+        postindicators: ['F']
+      })
+
+      expect(parseCallsign('LU1ABC/F/MM')).toEqual({
+        call: 'LU1ABC/F/MM',
+        baseCall: 'LU1ABC',
+        prefix: 'LU1',
+        ituPrefix: 'LU',
+        digit: '1',
+        postindicators: ['F', 'MM'],
+        indicators: ['MM']
+      })
+
+      expect(parseCallsign('F/LU1ABC')).toEqual({
+        call: 'F/LU1ABC',
+        baseCall: 'LU1ABC',
+        prefix: 'F',
+        digit: '',
+        ituPrefix: 'F',
+        preindicator: 'F',
+        prefixOverride: 'F'
+      })
+
+      expect(parseCallsign('LU1ABC/OA')).toEqual({
+        call: 'LU1ABC/OA',
+        baseCall: 'LU1ABC',
+        prefix: 'OA',
+        digit: '',
+        ituPrefix: 'OA',
+        postindicators: ['OA'],
+        prefixOverride: 'OA'
+      })
+    })
+
     it('should recognize prefixed and suffixed indicators', () => {
       expect(parseCallsign('YV/N0CALL/P')).toEqual({
         call: 'YV/N0CALL/P',
