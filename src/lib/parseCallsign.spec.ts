@@ -692,5 +692,89 @@ describe('Callsign Parsing', () => {
 
     })
   })
-})
 
+  describe('mergeCallsignInfo', () => {
+    it('should merge callsign info into an existing object', () => {
+      const original = {
+        call: 'N0CALL/P',
+        baseCall: 'N0CALL',
+        prefix: 'N0',
+        ituPrefix: 'N',
+        digit: '0',
+        postindicators: ['P'],
+        indicators: ['P'],
+        notes: 'some notes'
+      }
+      expect(mergeCallsignInfo(
+        original,
+        {
+          call: 'N8CALL',
+          baseCall: 'N8CALL',
+          prefix: 'N8',
+          ituPrefix: 'N',
+          digit: '8'
+        }
+      )).toEqual({
+        call: 'N8CALL',
+        baseCall: 'N8CALL',
+        prefix: 'N8',
+        ituPrefix: 'N',
+        digit: '8',
+        notes: 'some notes'
+      })
+
+      expect(original).toEqual({
+        call: 'N0CALL/P',
+        baseCall: 'N0CALL',
+        prefix: 'N0',
+        ituPrefix: 'N',
+        digit: '0',
+        postindicators: ['P'],
+        indicators: ['P'],
+        notes: 'some notes'
+      })
+    })
+
+    it('should merge callsign info into an existing object with a destination object', () => {
+      const original = {
+        call: 'N0CALL/P',
+        baseCall: 'N0CALL',
+        prefix: 'N0',
+        ituPrefix: 'N',
+        digit: '0',
+        postindicators: ['P'],
+        indicators: ['P'],
+        notes: 'some notes'
+      }
+      expect(mergeCallsignInfo(
+        original,
+        {
+          call: 'N8CALL',
+          baseCall: 'N8CALL',
+          prefix: 'N8',
+          ituPrefix: 'N',
+          digit: '8'
+        },
+        {
+          destination: original
+        }
+      )).toEqual({
+        call: 'N8CALL',
+        baseCall: 'N8CALL',
+        prefix: 'N8',
+        ituPrefix: 'N',
+        digit: '8',
+        notes: 'some notes'
+      })
+
+      expect(original).toEqual({
+        call: 'N8CALL',
+        baseCall: 'N8CALL',
+        prefix: 'N8',
+        ituPrefix: 'N',
+        digit: '8',
+        notes: 'some notes'
+      })
+    })
+  })
+})

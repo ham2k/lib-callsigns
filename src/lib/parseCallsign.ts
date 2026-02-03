@@ -199,3 +199,21 @@ function processPostindicator(indicator: string, info: ParsedCallsign = {}): Par
   return info
 }
 
+const CALLSIGN_INFO_KEYS = ['call', 'baseCall', 'prefix', 'ituPrefix', 'digit', 'preindicator', 'postindicators', 'prefixOverride', 'indicators', 'ssid'] as const
+
+// Combine callsign info into an existing object, ensuring that any relevalt keys
+// are removed if they are not present in the new info.
+export function mergeCallsignInfo(
+  base: { [key: string]: any },
+  newInfo: ParsedCallsign
+): { [key: string]: any } {
+  const result = { ...base }
+  for (const key of CALLSIGN_INFO_KEYS) {
+    if (newInfo[key]) {
+      result[key] = newInfo[key]
+    } else if (base.hasOwnProperty(key)) {
+      delete result[key]
+    }
+  }
+  return result
+}
