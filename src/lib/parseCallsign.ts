@@ -1,4 +1,9 @@
-import KNOWN_ENTITIES from '../data/entityPrefixes.json'
+import KNOWN_ENTITIES_ARRAY from '../data/entityPrefixes.json'
+
+const KNOWN_ENTITIES = (KNOWN_ENTITIES_ARRAY as readonly string[]).reduce((hash, entity) => {
+  hash[entity.toUpperCase()] = true
+  return hash
+}, {} as Record<string, boolean>)
 
 // Basic regexp that identifies a callsign and any pre- and post-indicators.
 const CALLSIGN_REGEXP =
@@ -102,13 +107,26 @@ export function parseCallsign(callsign: string | null | undefined, info: ParsedC
     }
 
     if (callsignParts[2]) {
-      info.baseCall = callsignParts[2] + callsignParts[3]
+      const baseCall = callsignParts[2] + callsignParts[3]
 
-      if (info.preindicator) {
-        info.prefixOverride = info.preindicator
-        processPrefix(info.preindicator, info)
+      if (KNOWN_ENTITIES[baseCall] && info.preindicator) {
+        // There's a few entity prefixes that look like callsings but are not.
+        // These should have been used as preindicators, but people sometimes do this.
+        // For example `K0H/KH0` or `AA7V/VP2V`
+        info.baseCall = info.preindicator
+        // info.prefixOverride = baseCall
+        info.postindicators = [...info.postindicators || [], baseCall]
+        delete info.preindicator
+        // processPrefix(baseCall, info)
       } else {
-        processPrefix(info.baseCall, info)
+        info.baseCall = baseCall
+
+        if (info.preindicator) {
+          info.prefixOverride = info.preindicator
+          processPrefix(info.preindicator, info)
+        } else {
+          processPrefix(info.baseCall, info)
+        }
       }
     }
 
@@ -143,7 +161,7 @@ export function processPrefix(callsign: string, info: ParsedCallsign = {}): Pars
   if (prefixParts) {
     info.ituPrefix = prefixParts[1]
     info.digit = prefixParts[2]
-    if ((KNOWN_ENTITIES as readonly string[]).indexOf(callsign) >= 0) {
+    if (KNOWN_ENTITIES[callsign.toUpperCase()]) {
       info.prefix = callsign
     } else {
       info.prefix = info.ituPrefix + info.digit
@@ -189,10 +207,16 @@ function processPostindicator(indicator: string, info: ParsedCallsign = {}): Par
   } else {
     // Allow postfix entity indicators (should have been a prefix, but people sometimes do this)
     // but only if it matches a principal entity prefix (i.e. ok for `G` or `G1` in England but not 'M')
-    const indicatorParts = processPrefix(indicator)
-    if ((KNOWN_ENTITIES as readonly string[]).indexOf(indicatorParts.ituPrefix || '') >= 0) {
+    if (KNOWN_ENTITIES[indicator]) {
       info.prefixOverride = indicator
       processPrefix(indicator, info)
+    } else {
+      const indicatorParts = processPrefix(indicator)
+
+      if (KNOWN_ENTITIES[indicatorParts.ituPrefix || '']) {
+        info.prefixOverride = indicator
+        processPrefix(indicator, info)
+      }
     }
   }
 
@@ -205,9 +229,12 @@ const CALLSIGN_INFO_KEYS = ['call', 'baseCall', 'prefix', 'ituPrefix', 'digit', 
 // are removed if they are not present in the new info.
 export function mergeCallsignInfo(
   base: { [key: string]: any },
-  newInfo: ParsedCallsign
+  newInfo: ParsedCallsign,
+  options?: {
+    destination: { [key: string]: any } | undefined,
+  },
 ): { [key: string]: any } {
-  const result = { ...base }
+  const result = options?.destination || { ...base }
   for (const key of CALLSIGN_INFO_KEYS) {
     if (newInfo[key]) {
       result[key] = newInfo[key]

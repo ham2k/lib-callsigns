@@ -1,4 +1,4 @@
-import { parseCallsign, processPrefix } from './parseCallsign'
+import { mergeCallsignInfo, parseCallsign, processPrefix } from './parseCallsign'
 
 describe('Callsign Parsing', () => {
   describe('processPrefix', () => {
@@ -471,6 +471,27 @@ describe('Callsign Parsing', () => {
         baseCall: 'AA7V',
         prefix: 'VP2V',
         preindicator: 'VP2V',
+        prefixOverride: 'VP2V',
+        ituPrefix: 'VP',
+        digit: '2'
+      })
+
+      expect(parseCallsign('AA7V/VP2V')).toEqual({
+        call: 'AA7V/VP2V',
+        baseCall: 'AA7V',
+        prefix: 'VP2V',
+        postindicators: ['VP2V'],
+        prefixOverride: 'VP2V',
+        ituPrefix: 'VP',
+        digit: '2'
+      })
+
+      expect(parseCallsign('AA7V/VP2V/MM')).toEqual({
+        call: 'AA7V/VP2V/MM',
+        baseCall: 'AA7V',
+        prefix: 'VP2V',
+        postindicators: ['VP2V', 'MM'],
+        indicators: ['MM'],
         prefixOverride: 'VP2V',
         ituPrefix: 'VP',
         digit: '2'
