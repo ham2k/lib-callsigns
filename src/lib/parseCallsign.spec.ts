@@ -707,6 +707,14 @@ describe('Callsign Parsing', () => {
     })
 
     it('should handle special exceptions (see README)', () => {
+      expect(parseCallsign('4UNR')).toEqual({
+        call: '4UNR',
+        baseCall: '4UNR',
+        prefix: '4UN',
+        ituPrefix: '4U',
+        digit: ''
+      })
+
       expect(parseCallsign('TU/TA2YGT')).toEqual({
         call: 'TU/TA2YGT',
         baseCall: 'TA2YGT',
@@ -756,7 +764,6 @@ describe('Callsign Parsing', () => {
         ituPrefix: '5U',
         digit: ''
       })
-
     })
   })
 

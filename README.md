@@ -21,7 +21,7 @@ The best source of information is the [Wikipedia Article on Amateur radio call s
 ### Callsigns with no separating numeral
 - Sometimes countries issue a special event callsign using a prefix that includes a number, without any extra separating numeral.
 For example, Bahamas has assigned the C6A-C6Z block. The prefix for "C6AFO" would be "C6", with no number.
-Other examples, D9K for Korea, H2T for Cyprus, S9Z for Sao Tome.
+Other examples, D9K for Korea, H2T for Cyprus, S9Z for Sao Tome, or 4U for the United Nations.
 
 - Panama allows the use of "HP/" as a prefix when operating from a cruise ship registered in Panama, so again, a prefix without a numeral.
 

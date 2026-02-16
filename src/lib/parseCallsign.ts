@@ -7,7 +7,7 @@ const KNOWN_ENTITIES = (KNOWN_ENTITIES_ARRAY as readonly string[]).reduce((hash,
 
 // Basic regexp that identifies a callsign and any pre- and post-indicators.
 const CALLSIGN_REGEXP =
-  /^([A-Z0-9]+\/){0,1}(5U[A-Z]*|[0-9][A-Z]{1,2}[0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
+  /^([A-Z0-9]+\/){0,1}([45]U[A-Z]*|[0-9][A-Z]{1,2}[0-9]|[ACDEHJLOPQSTUVXYZ][0-9]|[A-Z]{1,2}[0-9])([A-Z0-9]+)(\/[A-Z0-9/]+){0,1}$/
 
 // Regexp to extract SSID from callsign
 const SSID_REGEXP = /-[A-Z0-9-]{1,}/
@@ -19,8 +19,8 @@ const SSID_REGEXP = /-[A-Z0-9-]{1,}/
   `( [A-Z0-9]+ \/ ) {0,1}` to match zero or one "preindicators", composed of letters and digits and ending in `/`
 
   Prefix:
-  `( 5U[A-Z] | [0-9][A-Z][0-9] | [ACDEHJLOPQSTUVXYZ][0-9] | [A-Z]{1,2}[0-9] )` to match the four types of prefixes allowed:
-      - An exception for 5U allowing prefixes without a separating numeral (see README)
+  `( [45]U[A-Z] | [0-9][A-Z][0-9] | [ACDEHJLOPQSTUVXYZ][0-9] | [A-Z]{1,2}[0-9] )` to match the four types of prefixes allowed:
+      - An exception for 4U or 5U allowing prefixes without a separating numeral (see README)
       - Any digit-letter-digit
       - Any letter-digit
 
@@ -171,6 +171,9 @@ export function processPrefix(callsign: string, info: ParsedCallsign = {}): Pars
     // Niger has assigned callsigns with no separator number, which we need to handle as a special case
     if (info.ituPrefix?.startsWith('5U')) {
       info.ituPrefix = '5U'
+    }
+    if (info.ituPrefix?.startsWith('4U')) {
+      info.ituPrefix = '4U'
     }
   }
 
